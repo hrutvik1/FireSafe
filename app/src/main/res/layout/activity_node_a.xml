@@ -7,28 +7,24 @@
 
 
     <TextView
-        android:id="@+id/tvNodeA"
-        android:layout_width="63dp"
-        android:layout_height="33dp"
-        android:layout_marginTop="16dp"
-        android:text="Node A"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="171dp" />
-
-    <TextView
-        android:id="@+id/tvTemperature"
+        android:id="@+id/tvTemperatureA"
         android:layout_width="117dp"
         android:layout_height="49dp"
-        android:layout_marginTop="108dp"
+        android:layout_marginStart="147dp"
+        android:layout_marginLeft="147dp"
+        android:layout_marginTop="144dp"
         android:text="Temperature: "
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="43dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvTempA"
+        android:id="@+id/tvHumidityA"
         android:layout_width="97dp"
         android:layout_height="46dp"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="220dp"
-        tools:layout_editor_absoluteY="108dp" />
+        android:layout_marginStart="157dp"
+        android:layout_marginLeft="157dp"
+        android:layout_marginTop="391dp"
+        android:text="Humidity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
