@@ -1,7 +1,9 @@
 package com.example.lorawanfiresensor;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,51 +19,53 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-public class NodeBActivity extends Activity {
+import java.io.UnsupportedEncodingException;
+
+public class SafetyActivity extends Activity {
 
     // message comes in the form {"temperature":XX,"humidity":XX}
     //with algo future msgs will be {"temperature":XX,"humidity":XX, "direction":XX}
 
 
-
     static String MQTTHOST= "XXXXXXX";
-    static String USERNAME= "XXXXXXX";
+    static String USERNAME= "XXXXXX";
     static String PASSWORD= "XXXXXXX";
     String topicStr="Sensor/Data";
 
     MqttAndroidClient client;
 
-    TextView mtvTemperatureB;
-    TextView mtvHumidityB;
-
-    ImageButton mibtnTemperatureLogB;
-    ImageButton mibtnHumidityLogB;
-
-    ImageView mivTemperature;
-    ImageView mivHumidity;
-
+    TextView mtvDirection;
+    ImageButton mibtnPubLocation;
+    ImageButton mibtnPubSafety;
 
     MqttConnectOptions options;
 
     IMqttToken token ;
 
 
+    public void pub(String payload) {
+        String topic = "User/Status";
+        byte[] encodedPayload = new byte[0];
+        try {
+            encodedPayload = payload.getBytes("UTF-8");
+            MqttMessage message = new MqttMessage(encodedPayload);
+            client.publish(topic, message);
+        } catch (UnsupportedEncodingException | MqttException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_node_b); //first XML
+        setContentView(R.layout.activity_safety); //first XML
 
 
-        mibtnTemperatureLogB =(ImageButton)findViewById(R.id.ibtnTemperatureLogB);
-        mibtnHumidityLogB =(ImageButton)findViewById(R.id.ibtnTemperatureLogB);
+       mibtnPubLocation =(ImageButton)findViewById(R.id.ibtnPubLocation);
+        mibtnPubSafety =(ImageButton)findViewById(R.id.ibtnPubSafety);
+//        mtvDirection= (TextView)findViewById(R.id.tvDirection);
 
-        mivTemperature =(ImageView)findViewById(R.id.ivTemperature);
-        mivHumidity =(ImageView)findViewById(R.id.ivHumidity);
-
-        mtvTemperatureB= (TextView)findViewById(R.id.tvTemperatureB);
-        mtvHumidityB=(TextView)findViewById(R.id.tvHumidityB);
 
         String clientId = MqttClient.generateClientId();
         client =
@@ -75,6 +79,35 @@ public class NodeBActivity extends Activity {
 
         deployMqtt();
 
+        mibtnPubLocation.setOnClickListener(new View.OnClickListener() {
+            /**
+             * This method is done when the user clicks the Node A button
+             *
+             * @param v
+             */
+            @Override
+            public void onClick(View v) {
+                pub("helpMe,location");
+                Toast.makeText(SafetyActivity.this,"Help is on the way! Your location has been sent", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        mibtnPubSafety.setOnClickListener(new View.OnClickListener() {
+            /**
+             * This method is done when the user clicks the Node A button
+             *
+             * @param v
+             */
+            @Override
+            public void onClick(View v) {
+                pub("imSafe,name");
+                Toast.makeText(SafetyActivity.this,"You have been marked safe", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+
 
     }
 
@@ -87,7 +120,7 @@ public class NodeBActivity extends Activity {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
-                    Toast.makeText(NodeBActivity.this,"successfully connected", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SafetyActivity.this,"successfully connected", Toast.LENGTH_LONG).show();
 
                     try{
                         client.subscribe(topicStr,1); //subscribing
@@ -99,7 +132,7 @@ public class NodeBActivity extends Activity {
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     // Something went wrong e.g. connection timeout or firewall problems
-                    Toast.makeText(NodeBActivity.this,"connection failed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SafetyActivity.this,"connection failed", Toast.LENGTH_LONG).show();
 
                 }
             });
@@ -116,30 +149,16 @@ public class NodeBActivity extends Activity {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-
-                // message comes in the form {"temperature":XX,"humidity":XX}
-                //with algo future msgs will be {"temperature":XX,"humidity":XX, "direction":XX}
                 String msg=new String(message.getPayload());
                 String [] data=  msg.split(",");
                 String []temperatureData=data[0].split(":");
                 String temperature=temperatureData[1];
 
-                mtvTemperatureB.setText(temperature);
 
                 String []humidityData=data[1].split(":");
                 String humidity=humidityData[1];
                 humidity = humidity.substring(0, humidity.length() - 1); //delete this when directions is implemented
-                mtvHumidityB.setText(humidity);
-
-
-                /*
-                direction equiv:
-                String []directionData=data[2].split(":");
-                String direction=directionData[1];
-                direction = direction.substring(0, direction.length() - 1);
-                mtvTemperature.setText(direction);
-                 */
-            }
+                 }
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {

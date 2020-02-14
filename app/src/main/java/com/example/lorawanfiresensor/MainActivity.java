@@ -3,10 +3,12 @@ package com.example.lorawanfiresensor;
         import androidx.appcompat.app.AppCompatActivity;
 
         import android.content.Intent;
+        import android.graphics.Color;
         import android.os.Bundle;
         import android.util.Log;
         import android.view.View;
         import android.widget.Button;
+        import android.widget.ImageButton;
         import android.widget.ImageView;
         import android.widget.TextView;
         import android.widget.Toast;
@@ -30,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    static String MQTTHOST= "XXXXXXX";
-    static String USERNAME= "XXXXXXX";
-    static String PASSWORD= "XXXXXXX";
+    static String MQTTHOST= "XXXXXXXXX";
+    static String USERNAME= "XXXXXXXXX";
+    static String PASSWORD= "XXXXXXXXX";
     String topicStr="Sensor/Data";
 
     MqttAndroidClient client;
@@ -41,14 +43,39 @@ public class MainActivity extends AppCompatActivity {
 
     MqttConnectOptions options;
 
+    ImageButton mibtnDisconnect;
+    ImageButton mibtnConnect;
+
+
+
+    public void openSafetyActivity() {
+
+        ImageButton mibtnSafety = (ImageButton) findViewById(R.id.ibtnSafety);
+
+        mibtnSafety.setOnClickListener(new View.OnClickListener() {
+            /**
+             * This method is done when the user clicks the Node A button
+             *
+             * @param v
+             */
+            @Override
+            public void onClick(View v) {
+                String msgIntent;
+                Intent SafetyActivityIntent = new Intent(MainActivity.this, SafetyActivity.class); //intent object opens the next activity
+
+                startActivity(SafetyActivityIntent); //                                                                 and this
+
+            }
+        });
+    }
 
 
 
     public void openNodeAActivity() {
 
-        Button mbtnNodeA = (Button) findViewById(R.id.btnNodeA);
+        ImageButton mibtnNodeA = (ImageButton) findViewById(R.id.ibtnNodeA);
 
-        mbtnNodeA.setOnClickListener(new View.OnClickListener() {
+        mibtnNodeA.setOnClickListener(new View.OnClickListener() {
             /**
              * This method is done when the user clicks the Node A button
              *
@@ -67,9 +94,9 @@ public class MainActivity extends AppCompatActivity {
     }
     public void openNodeBActivity() {
 
-        Button mbtnNodeB = (Button) findViewById(R.id.btnNodeB);
+        ImageButton mibtnNodeB = (ImageButton) findViewById(R.id.ibtnNodeB);
 
-        mbtnNodeB.setOnClickListener(new View.OnClickListener() {
+        mibtnNodeB.setOnClickListener(new View.OnClickListener() {
             /**
              * This method is done when the user clicks the Node A button
              *
@@ -108,6 +135,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void conn(View v){
+        mibtnDisconnect = (ImageButton) findViewById(R.id.ibtnDisconnect);
+        mibtnConnect = (ImageButton) findViewById(R.id.ibtnConnect);
+
+        mibtnConnect.setEnabled(false);
+        mibtnDisconnect.setEnabled(true);
+        mibtnDisconnect.clearColorFilter();
+        mibtnConnect.setAlpha((float)0.5);
+
+
         try {
             IMqttToken token = client.connect(options);
             token.setActionCallback(new IMqttActionListener() {
@@ -131,6 +167,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void disconn(View v){
+
+        mibtnDisconnect = (ImageButton) findViewById(R.id.ibtnDisconnect);
+        mibtnConnect = (ImageButton) findViewById(R.id.ibtnConnect);
+        mibtnConnect.setEnabled(true);
+        mibtnDisconnect.setEnabled(false);
+        mibtnConnect.clearColorFilter();
+        mibtnDisconnect.setAlpha((float)0.5);
+
+
         try {
             IMqttToken token = client.disconnect();
             token.setActionCallback(new IMqttActionListener() {
@@ -159,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        mtvTest= (TextView)findViewById(R.id.tvTest);
+        //mtvTest= (TextView)findViewById(R.id.tvTest);
 
         String clientId = MqttClient.generateClientId();
         client =
@@ -217,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
 
         openNodeAActivity();
         openNodeBActivity();
+        openSafetyActivity();
 
 
     }

@@ -2,6 +2,8 @@ package com.example.lorawanfiresensor;
 
         import android.app.Activity;
         import android.os.Bundle;
+        import android.widget.ImageButton;
+        import android.widget.ImageView;
         import android.widget.TextView;
         import android.widget.Toast;
 
@@ -22,15 +24,24 @@ public class NodeAActivity extends Activity {
 
 
 
-    static String MQTTHOST= "XXXXXXX";
-    static String USERNAME= "XXXXXXX";
-    static String PASSWORD= "XXXXXXX";
+    static String MQTTHOST= "XXXXXXXXX";
+    static String USERNAME= "XXXXXXXXX";
+    static String PASSWORD= "XXXXXXXXX";
     String topicStr="Sensor/Data";
 
     MqttAndroidClient client;
 
+
     TextView mtvTemperatureA;
     TextView mtvHumidityA;
+
+    ImageButton mibtnTemperatureLogA;
+    ImageButton mibtnHumidityLogA;
+
+    ImageView mivTemperature;
+    ImageView mivHumidity;
+
+
 
     MqttConnectOptions options;
 
@@ -46,10 +57,15 @@ public class NodeAActivity extends Activity {
 
 
 
+        mibtnTemperatureLogA =(ImageButton)findViewById(R.id.ibtnTemperatureLogA);
+        mibtnHumidityLogA =(ImageButton)findViewById(R.id.ibtnTemperatureLogA);
 
+        mivTemperature =(ImageView)findViewById(R.id.ivTemperature);
+        mivHumidity =(ImageView)findViewById(R.id.ivHumidity);
 
         mtvTemperatureA= (TextView)findViewById(R.id.tvTemperatureA);
         mtvHumidityA=(TextView)findViewById(R.id.tvHumidityA);
+
 
         String clientId = MqttClient.generateClientId();
         client =
@@ -61,12 +77,12 @@ public class NodeAActivity extends Activity {
         options.setUserName(USERNAME);
         options.setPassword(PASSWORD.toCharArray());
 
-        depoloyMqtt();
+        deployMqtt();
 
 
     }
 
-    public void depoloyMqtt(){
+    public void deployMqtt(){
 
         try {
             token = client.connect(options);
