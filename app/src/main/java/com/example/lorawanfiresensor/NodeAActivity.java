@@ -23,10 +23,9 @@ public class NodeAActivity extends Activity {
     //with algo future msgs will be {"temperature":XX,"humidity":XX, "direction":XX}
 
 
-
-    static String MQTTHOST= "XXXXXXXXX";
-    static String USERNAME= "XXXXXXXXX";
-    static String PASSWORD= "XXXXXXXXX";
+    static String MQTTHOST= "tcp://hairdresser.cloudmqtt.com:15955";
+    static String USERNAME= "pslgynex";
+    static String PASSWORD= "MOCo261u5hxW";
     String topicStr="Sensor/Data";
 
     MqttAndroidClient client;
@@ -66,6 +65,7 @@ public class NodeAActivity extends Activity {
         mtvTemperatureA= (TextView)findViewById(R.id.tvTemperatureA);
         mtvHumidityA=(TextView)findViewById(R.id.tvHumidityA);
 
+        //mtvPressureA
 
         String clientId = MqttClient.generateClientId();
         client =
@@ -126,14 +126,24 @@ public class NodeAActivity extends Activity {
                 String msg=new String(message.getPayload());
                 String [] data=  msg.split(",");
                 String []temperatureData=data[0].split(":");
-                String temperature=temperatureData[1];
+                String temperature=temperatureData[2];
 
                 mtvTemperatureA.setText(temperature);
 
                 String []humidityData=data[1].split(":");
                 String humidity=humidityData[1];
-                humidity = humidity.substring(0, humidity.length() - 1); //delete this when directions is implemented
                 mtvHumidityA.setText(humidity);
+
+
+                String []pressureData=data[2].split(":");
+                String pressure=pressureData[1];
+             //   mtvPressureA.setText(pressure);
+
+
+                String []deviceID=data[3].split(":");
+                String device=deviceID[1];
+                device = device.substring(0, device.length() - 1); //delete this when directions is implemented
+//                mDeviceA.setText(device);
 
 
                 /*

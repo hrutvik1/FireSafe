@@ -23,10 +23,9 @@ public class NodeBActivity extends Activity {
     //with algo future msgs will be {"temperature":XX,"humidity":XX, "direction":XX}
 
 
-
-    static String MQTTHOST= "XXXXXXX";
-    static String USERNAME= "XXXXXXX";
-    static String PASSWORD= "XXXXXXX";
+    static String MQTTHOST= "tcp://hairdresser.cloudmqtt.com:15955";
+    static String USERNAME= "pslgynex";
+    static String PASSWORD= "MOCo261u5hxW";
     String topicStr="Sensor/Data";
 
     MqttAndroidClient client;

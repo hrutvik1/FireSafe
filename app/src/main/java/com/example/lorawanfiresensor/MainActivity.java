@@ -32,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    static String MQTTHOST= "XXXXXXXXX";
-    static String USERNAME= "XXXXXXXXX";
-    static String PASSWORD= "XXXXXXXXX";
+    static String MQTTHOST= "tcp://hairdresser.cloudmqtt.com:15955";
+    static String USERNAME= "pslgynex";
+    static String PASSWORD= "MOCo261u5hxW";
     String topicStr="Sensor/Data";
 
     MqttAndroidClient client;
@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         mibtnDisconnect = (ImageButton) findViewById(R.id.ibtnDisconnect);
         mibtnConnect = (ImageButton) findViewById(R.id.ibtnConnect);
 
+        mibtnDisconnect.setAlpha((float)1); //test 1 or 0
         mibtnConnect.setEnabled(false);
         mibtnDisconnect.setEnabled(true);
         mibtnDisconnect.clearColorFilter();
@@ -168,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void disconn(View v){
 
+        mibtnConnect.setAlpha((float)1); //test 1 or 0
         mibtnDisconnect = (ImageButton) findViewById(R.id.ibtnDisconnect);
         mibtnConnect = (ImageButton) findViewById(R.id.ibtnConnect);
         mibtnConnect.setEnabled(true);
