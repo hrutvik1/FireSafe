@@ -32,12 +32,14 @@ public class NodeBActivity extends Activity {
 
     TextView mtvTemperatureB;
     TextView mtvHumidityB;
+    TextView mtvGasB;
 
     ImageButton mibtnTemperatureLogB;
     ImageButton mibtnHumidityLogB;
 
     ImageView mivTemperature;
     ImageView mivHumidity;
+    ImageView mivGas;
 
 
     MqttConnectOptions options;
@@ -58,9 +60,11 @@ public class NodeBActivity extends Activity {
 
         mivTemperature =(ImageView)findViewById(R.id.ivTemperature);
         mivHumidity =(ImageView)findViewById(R.id.ivHumidity);
+        mivGas = (ImageView)findViewById(R.id.imageView7);
 
         mtvTemperatureB= (TextView)findViewById(R.id.tvTemperatureB);
         mtvHumidityB=(TextView)findViewById(R.id.tvHumidityB);
+        mtvGasB=(TextView)findViewById(R.id.tvCoLvl);
 
         String clientId = MqttClient.generateClientId();
         client =
@@ -121,11 +125,14 @@ public class NodeBActivity extends Activity {
                 String msg=new String(message.getPayload());
                 String [] data=  msg.split(",");
                 String []temperatureData=data[0].split(":");
-                String temperature=temperatureData[1];
-
+                String temperature=temperatureData[2];
                 mtvTemperatureB.setText(temperature);
 
-                String []humidityData=data[1].split(":");
+                String []gasData=data[1].split(":");
+                String gas=gasData[1];
+                mtvGasB.setText(gas);
+
+                String []humidityData=data[2].split(":");
                 String humidity=humidityData[1];
                 humidity = humidity.substring(0, humidity.length() - 1); //delete this when directions is implemented
                 mtvHumidityB.setText(humidity);

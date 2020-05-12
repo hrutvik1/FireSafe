@@ -1,6 +1,7 @@
 package com.example.lorawanfiresensor;
 
         import android.app.Activity;
+        import android.media.MediaPlayer;
         import android.os.Bundle;
         import android.widget.ImageButton;
         import android.widget.ImageView;
@@ -16,6 +17,10 @@ package com.example.lorawanfiresensor;
         import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
         import org.eclipse.paho.client.mqttv3.MqttException;
         import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+        import java.io.BufferedWriter;
+        import java.io.FileWriter;
+        import java.io.IOException;
 
 public class NodeAActivity extends Activity {
 
@@ -47,12 +52,17 @@ public class NodeAActivity extends Activity {
     IMqttToken token ;
 
 
+     MediaPlayer alarmMP;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_node_a); //first XML
+
+
+ //       alarmMP= MediaPlayer.create(this,R.r);
 
 
 
@@ -85,11 +95,16 @@ public class NodeAActivity extends Activity {
     public void deployMqtt(){
 
         try {
+
+
             token = client.connect(options);
 
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
+
+                    alarmMP.start();
+
                     // We are connected
                     Toast.makeText(NodeAActivity.this,"successfully connected", Toast.LENGTH_LONG).show();
 
@@ -121,6 +136,9 @@ public class NodeAActivity extends Activity {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
 
+
+
+
                 // message comes in the form {"temperature":XX,"humidity":XX}
                 //with algo future msgs will be {"temperature":XX,"humidity":XX, "direction":XX}
                 String msg=new String(message.getPayload());
@@ -145,6 +163,36 @@ public class NodeAActivity extends Activity {
                 device = device.substring(0, device.length() - 1); //delete this when directions is implemented
 //                mDeviceA.setText(device);
 
+
+                int intTemp=71;
+
+                //int intTemp= Integer.valueOf(temperature);
+
+                if(intTemp>70){
+                    alarmMP.start();
+                }
+
+
+                for (int i=0;i<data.length;i++) {
+                    try {
+                        FileWriter fw = new
+                                FileWriter("C:\\Temp\\sensorAvalues.Txt");
+                        BufferedWriter WriteFileBuffer = new
+                                BufferedWriter(fw);
+
+                        //Sample 02: Write Some Text to File
+                        // Using Buffered Writer)
+                        WriteFileBuffer.write(data[i]);
+                        WriteFileBuffer.newLine();
+                        //Sample 03: Close both the Writers
+                        WriteFileBuffer.close();
+
+                    } catch (IOException Ex) {
+
+                        System.out.println(Ex.getMessage());
+                    }
+
+                }
 
                 /*
                 direction equiv:
